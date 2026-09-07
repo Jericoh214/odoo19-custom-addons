@@ -3,7 +3,7 @@ env/
 venv/
 entorno_virtual/
 .venv/
-
+    
 # Archivos compilados de Python
 __pycache__/
 *.py[cod]
