@@ -5,9 +5,9 @@ Además, se especifica que el módulo es instalable y no es una aplicación inde
 """
 
 {
-    'name': 'Personalización de CRM a Ventas',
+    'name': 'Personalización CRM Jilanquiri',
     'version': '1.0',
-    'summary': 'Añade campos técnicos en CRM',
+    'summary': 'Personalización del módulo CRM para Jilanquiri SAC',
     'author': 'Jerico',
     'category': 'Sales/CRM',
     'depends': ['crm', 'sale_management'],
