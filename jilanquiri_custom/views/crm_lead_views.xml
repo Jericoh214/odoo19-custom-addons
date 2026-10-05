@@ -1,24 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="crm_lead_form_view_inherit" model="ir.ui.view">
-        <field name="name">crm.lead.form.inherit</field>
+    <record id="crm_lead_view_form_inherit_jilanquiri" model="ir.ui.view">
+        <field name="name">crm.lead.form.inherit.jilanquiri</field>
         <field name="model">crm.lead</field>
         <field name="inherit_id" ref="crm.crm_lead_view_form"/>
         <field name="arch" type="xml">
-            
-            <xpath expr="//group" position="after">
-                <group string="Condiciones de pago">
-                    <group>
-                        <field name="condicion_pago_requerida"/>
-                        <field name="tiempo_entrega_dias"/>
-                        <field name="requiere_certificado_calidad"/>
-                    </group>
-                    <group>
-                        <field name="contacto_tecnico"/>
-                    </group>
-                </group>
+            <!-- Inyectamos los campos de Jilanquiri dentro de la información principal -->
+            <xpath expr="//group[@name='lead_info']" position="inside">
+                <field name="condicion_pago_requerida"/>
+                <field name="tiempo_entrega_dias"/>
+                <field name="requiere_certificado_calidad"/>
+                <field name="contacto_tecnico"/>
             </xpath>
         </field>
     </record>
 </odoo>
-
