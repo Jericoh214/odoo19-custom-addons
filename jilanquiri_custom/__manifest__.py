@@ -1,12 +1,13 @@
 {
     'name': 'Jilanquiri Custom',
     'version': '1.0',
-    'summary': 'Adaptación para Jilanquiri SAC',
+    'summary': 'Adaptación de CRM y Ventas para Jilanquiri SAC',
     'author': 'Jerico',
     'category': 'Sales/CRM',
     'depends': ['crm', 'sale_management'],
     'data': [
         'views/crm_lead_views.xml',
+        'views/sale_order_views.xml',
     ],
     'installable': True,
     'application': False,
