@@ -8,6 +8,7 @@
     'data': [
         'views/crm_lead_views.xml',
         'views/sale_order_views.xml',
+        'views/report_saleorder_custom.xml'
     ],
     'installable': True,
     'application': False,

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- 1. CREAR EL LAYOUT ESPECÍFICO DE JILANQUIRI -->
+        <template id="jilanquiri_layout">
+            <t t-if="not o" t-set="o" t-value="doc"/>
+            <t t-if="not company" t-set="company" t-value="company_id"/>
+            <t t-if="not company" t-set="company" t-value="res_company"/>
+            
+            <div class="article" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+                <!-- ENCABEZADO -->
+                <div class="header" style="font-family: Arial, sans-serif;">
+                    <div class="row align-items-center">
+                        <div class="col-3">
+                            <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 90px;" alt="Logo"/>
+                        </div>
+                        <div class="col-9 text-center" style="font-weight: bold; text-decoration: underline; font-size: 16px; color: #000;">
+                            <div>RUC: <t t-out="company.vat or '10098354340'"/></div>
+                            <div>JR COSTA AZUL 173-CHORRILLOS -LIMA -PERU</div>
+                            <div>hectorhope@hotmail.com</div>
+                            <div style="color: #1f497d; text-decoration: none; font-size: 13px; margin-top: 5px;">
+                                Soluciones Integrales en herramientas y maquinarias para el sector Mecanico e industrial
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- CUERPO DEL REPORTE -->
+                <t t-out="0"/>
+                
+                <!-- PIE DE PÁGINA (OPCIONAL) -->
+                <div class="footer text-center" style="font-size: 10px; color: #777;">
+                    Página <span class="page"/> de <span class="topage"/>
+                </div>
+            </div>
+        </template>
+
+        <!-- 2. REEMPLAZAR EL REPORTE DE VENTAS PARA USAR EL NUEVO LAYOUT -->
+        <template id="custom_report_saleorder_document" inherit_id="sale.report_saleorder_document">
+            <!-- Interceptamos la llamada al layout normal y lo cambiamos por el nuestro -->
+            <xpath expr="//t[@t-call='web.external_layout']" position="attributes">
+                <attribute name="t-call">jilanquiri_custom.jilanquiri_layout</attribute>
+            </xpath>
+            
+            <!-- Reemplazamos la página interna -->
+            <xpath expr="//div[hasclass('page')]" position="replace">
+                <div class="page" style="font-family: Arial, sans-serif; font-size: 12px; color: #000;">
+                    
+                    <div class="text-center mt-3 mb-2" style="border-top: 1px solid #1f497d; border-bottom: 1px solid #1f497d; color: #1f497d; font-weight: bold;">
+                        COTIZACION N° <t t-out="doc.name"/>
+                    </div>
+                    
+                    <div class="row mb-2">
+                        <div class="col-9 font-weight-bold" style="color: #1f497d;">
+                            ATTE: <t t-out="doc.partner_id.name"/>
+                        </div>
+                        <div class="col-3 text-end" style="border: 1px solid #ccc;">
+                            <t t-out="doc.date_order" t-options='{"widget": "date"}'/>
+                        </div>
+                    </div>
+                    <div class="mb-3" style="font-style: italic;">
+                        ATENCION: <t t-out="doc.partner_id.parent_id.name or doc.partner_id.name"/>
+                    </div>
+                    <div class="mb-3 text-muted">
+                        De acuerdo a su solicitud nos permitimos alcanzar a Ud. Nuestra cotizacion por lo siguiente:
+                    </div>
+
+                    <!-- NUEVO BLOQUE: Logos de las marcas individuales -->
+                    <div class="row mb-3 mt-3 justify-content-center align-items-center">
+                        <div class="col-2 text-center">
+                            <img src="/jilanquiri_custom/static/src/img/samoa_logo.png" style="max-height: 40px; max-width: 100%;" alt="Samoa"/>
+                        </div>
+                        <div class="col-2 text-center">
+                            <img src="/jilanquiri_custom/static/src/img/tramontina_logo.png" style="max-height: 40px; max-width: 100%;" alt="Tramontina Pro"/>
+                        </div>
+                        <div class="col-2 text-center">
+                            <img src="/jilanquiri_custom/static/src/img/action_logo.png" style="max-height: 40px; max-width: 100%;" alt="Action"/>
+                        </div>
+                        <div class="col-2 text-center">
+                            <img src="/jilanquiri_custom/static/src/img/toptul_logo.png" style="max-height: 40px; max-width: 100%;" alt="Toptul"/>
+                        </div>
+                        <div class="col-2 text-center">
+                            <img src="/jilanquiri_custom/static/src/img/Stanley-Logo.png" style="max-height: 40px; max-width: 100%;" alt="Stanley"/>
+                        </div>
+                        <div class="col-2 text-center">
+                            <img src="/jilanquiri_custom/static/src/img/schulz_logo.png" style="max-height: 40px; max-width: 100%;" alt="Schulz"/>
+                        </div>
+                    </div>
+
+
+                    <table class="table table-sm table-bordered" style="border-color: #000;">
+                        <thead style="background-color: #d9e1f2; color: #1f497d; text-align: center; font-weight: bold; font-size: 11px;">
+                            <tr>
+                                <th>CANT.</th>
+                                <th>DESCRIPCION</th>
+                                <th>MARCA</th>
+                                <th>UNIT</th>
+                                <th>PRECIO inc igv</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-center">
+                            <t t-foreach="doc.order_line" t-as="line">
+                                <tr t-if="not line.display_type">
+                                    <td><t t-out="line.product_uom_qty"/></td>
+                                    <td class="text-start font-weight-bold"><t t-out="line.name"/></td>
+                                    <td>NACIONAL</td>
+                                    <td><t t-out="line.price_unit" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td><t t-out="line.price_total" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+
+                    <div class="row justify-content-end mt-2">
+                        <div class="col-5">
+                            <table class="table table-sm table-bordered text-center" style="border-color: #000; font-weight: bold;">
+                                <tr>
+                                    <td>SUB TOTAL S/</td>
+                                    <td><t t-out="doc.amount_untaxed" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
+                                </tr>
+                                <tr>
+                                    <td>IGV.</td>
+                                    <td><t t-out="doc.amount_tax" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
+                                </tr>
+                                <tr>
+                                    <td>TOTAL S/</td>
+                                    <td style="background-color: #ffff00;"><t t-out="doc.amount_total" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 text-center font-weight-bold" style="color: #1f497d; font-size: 11px;">
+                        <div style="border-top: 1px solid #000; padding: 2px 0;">DISPONIBILIDAD DE STOCK</div>
+                        <div style="border-top: 1px solid #000; padding: 2px 0;">CONTADO TRANSFERENCIA SOLES</div>
+                        <div style="border-top: 1px solid #000; padding: 2px 0;">PLAZO DE ENTREGA 3 DÍAS</div>
+                        <div style="border-top: 1px solid #000; padding: 2px 0;">ENTREGA INMEDIATA PREVIO DEPOSITO</div>
+                        <div style="border-top: 1px solid #000; border-bottom: 1px solid #000; padding: 2px 0;">INCLUYE FLETE EN LIMA/PROVINCIAS ASUME CLIENTE</div>
+                    </div>
+
+                    <div class="mt-4" style="font-size: 11px; font-style: italic;">
+                        <div style="border-bottom: 1px solid #000; width: 40%;">ATTE: HECTOR HERRERA BENAVENTE</div>
+                        <div class="text-center" style="border-bottom: 1px solid #000; width: 50%; margin: 0 auto;">TELF: 961949648</div>
+                        <div style="border-bottom: 1px solid #000; width: 40%;">TECNICO EN INGENIERIA MECANICA</div>
+                        <div class="text-center text-primary" style="text-decoration: underline; width: 50%; margin: 0 auto; border-bottom: 1px solid #000;">jilanquirisac@gmail.com</div>
+                    </div>
+                    
+                </div>
+            </xpath>
+        </template>
+    </data>
+</odoo>
