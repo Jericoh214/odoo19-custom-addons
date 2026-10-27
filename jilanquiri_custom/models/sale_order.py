@@ -1,29 +1,42 @@
+# -*- coding: utf-8 -*-
 from odoo import models, fields
+
 
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
-    # Campos que viajan automáticamente desde el CRM
-    condicion_pago_requerida = fields.Selection(
-        related='opportunity_id.condicion_pago_requerida',
-        string='Condición de Pago (CRM)',
-        readonly=False
+    # Condiciones comerciales heredadas / comunicadas desde CRM
+    x_plazo_entrega = fields.Char(
+        string='Plazo de Entrega',
+        help='Plazo de entrega acordado con el cliente'
     )
-    
-    tiempo_entrega_dias = fields.Integer(
-        related='opportunity_id.tiempo_entrega_dias',
-        string='Tiempo de Entrega (Días útiles)',
-        readonly=False
+    x_disponibilidad_stock = fields.Char(
+        string='Disponibilidad',
+        help='Disponibilidad de stock'
     )
-    
-    requiere_certificado_calidad = fields.Boolean(
-        related='opportunity_id.requiere_certificado_calidad',
-        string='Requiere Certificado',
-        readonly=False
+    x_marca_sugerida = fields.Char(
+        string='Marca Sugerida',
+        help='Marca sugerida desde la oportunidad'
     )
-    
-    contacto_tecnico = fields.Char(
-        related='opportunity_id.contacto_tecnico',
-        string='Contacto Técnico',
-        readonly=False
+
+    # Cuentas bancarias personalizadas de Jilanquiri SAC
+    x_nro_cuenta_cte = fields.Char(
+        string='Nro. Cuenta Corriente',
+        default='.001108490100005995-',
+        help='Cuenta Corriente del Banco BBVA'
+    )
+    x_nro_cci = fields.Char(
+        string='Nro. CCI',
+        default='.01184900010000599574-',
+        help='Código de Cuenta Interbancario BBVA'
+    )
+
+
+class SaleOrderLine(models.Model):
+    _inherit = 'sale.order.line'
+
+    x_marca = fields.Char(
+        string='Marca',
+        default='NACIONAL',
+        help='Marca del producto para el reporte de cotización'
     )

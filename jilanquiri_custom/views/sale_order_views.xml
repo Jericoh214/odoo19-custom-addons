@@ -11,19 +11,26 @@
                 <xpath expr="//notebook" position="inside">
                     <page name="jilanquiri_page" string="Condiciones Jilanquiri">
                         <group name="jilanquiri_group">
-                            <group>
-                            <!--Campos qie permiten cambiar la informacion de cuenta si es necesario, de lo contrario se colocan los datos iniciales de la empresa-->
+                            <group name="jilanquiri_group_comercial" string="Condiciones Comerciales">
+                                <field name="x_plazo_entrega"/>
+                                <field name="x_disponibilidad_stock"/>
+                                <field name="x_marca_sugerida"/>
+                            </group>
+                            <group name="jilanquiri_group_banco" string="Cuentas Bancarias (Reporte)">
+                                <!-- Campos que permiten cambiar la información de cuenta si es necesario -->
                                 <field name="x_nro_cuenta_cte"/>
                                 <field name="x_nro_cci"/>
                             </group>
                         </group>
                     </page>
                 </xpath>
-                <!-- 2. Columna Marca en la tabla de productos (Usando <list> para Odoo 19) -->
+
+                <!-- 2. Columna Marca en la tabla de productos (Sintaxis <list> para Odoo 19) -->
                 <xpath expr="//field[@name='order_line']/list/field[@name='name']" position="after">
                     <field name="x_marca" string="Marca" optional="show"/>
                 </xpath>
-                <!-- 3. Cambiar el texto gris de la caja de Términos y Condiciones -->
+
+                <!-- 3. Placeholder descriptivo en la caja de Términos y Condiciones -->
                 <xpath expr="//field[@name='note']" position="attributes">
                     <attribute name="placeholder">Términos y condiciones... (Separador de filas -> |||)</attribute>
                 </xpath>

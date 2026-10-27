@@ -4,7 +4,7 @@
     'summary': 'Adaptación de CRM y Ventas para Jilanquiri SAC',
     'author': 'Jerico',
     'category': 'Sales/CRM',
-    'depends': ['crm', 'sale_management'],
+    'depends': ['crm', 'sale_management', 'sale_crm'],
     'data': [
         'views/crm_lead_views.xml',
         'views/sale_order_views.xml',
