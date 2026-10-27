@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- 1. CREAR EL LAYOUT ESPECÍFICO DE JILANQUIRI -->
+        <!-- 1. LAYOUT PERSONALIZADO DE JILANQUIRI SAC -->
         <template id="jilanquiri_layout">
             <t t-if="not o" t-set="o" t-value="doc"/>
             <t t-if="not company" t-set="company" t-value="company_id"/>
@@ -12,9 +12,9 @@
                 <div class="header" style="font-family: Arial, sans-serif;">
                     <div class="row align-items-center">
                         <div class="col-3">
-                            <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 90px;" alt="Logo"/>
+                            <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 90px;" alt="Logo Jilanquiri"/>
                         </div>
-                        <div class="col-9 text-center" style="font-weight: bold; text-decoration: underline; font-size: 16px; color: #000;">
+                        <div class="col-9 text-center" style="font-weight: bold; text-decoration: underline; font-size: 15px; color: #000;">
                             <div>RUC: <t t-out="company.vat or '10098354340'"/></div>
                             <div>JR COSTA AZUL 173-CHORRILLOS -LIMA -PERU</div>
                             <div>hectorhope@hotmail.com</div>
@@ -25,127 +25,190 @@
                     </div>
                 </div>
                 
-                <!-- CUERPO DEL REPORTE -->
+                <!-- CUERPO DEL DOCUMENTO -->
                 <t t-out="0"/>
                 
-                <!-- PIE DE PÁGINA (OPCIONAL) -->
+                <!-- PIE DE PÁGINA -->
                 <div class="footer text-center" style="font-size: 10px; color: #777;">
                     Página <span class="page"/> de <span class="topage"/>
                 </div>
             </div>
         </template>
 
-        <!-- 2. REEMPLAZAR EL REPORTE DE VENTAS PARA USAR EL NUEVO LAYOUT -->
-        <template id="custom_report_saleorder_document" inherit_id="sale.report_saleorder_document">
-            <!-- Interceptamos la llamada al layout normal y lo cambiamos por el nuestro -->
-            <xpath expr="//t[@t-call='web.external_layout']" position="attributes">
-                <attribute name="t-call">jilanquiri_custom.jilanquiri_layout</attribute>
-            </xpath>
-            
-            <!-- Reemplazamos la página interna -->
-            <xpath expr="//div[hasclass('page')]" position="replace">
-                <div class="page" style="font-family: Arial, sans-serif; font-size: 12px; color: #000;">
-                    
-                    <div class="text-center mt-3 mb-2" style="border-top: 1px solid #1f497d; border-bottom: 1px solid #1f497d; color: #1f497d; font-weight: bold;">
-                        COTIZACION N° <t t-out="doc.name"/>
-                    </div>
-                    
-                    <div class="row mb-2">
-                        <div class="col-9 font-weight-bold" style="color: #1f497d;">
-                            ATTE: <t t-out="doc.partner_id.name"/>
+        <!-- 2. PLANTILLA DE COTIZACIÓN SOBREESCRITA -->
+        <template id="custom_report_saleorder_document" inherit_id="sale.report_saleorder_document" priority="1">
+            <xpath expr="//t[@t-call]" position="replace">
+                <t t-call="jilanquiri_custom.jilanquiri_layout">
+                    <div class="page" style="font-family: Arial, sans-serif; font-size: 12px; color: #000;">
+                        
+                        <!-- Título de Cotización -->
+                        <div class="text-center mt-3 mb-2" style="border-top: 1px solid #1f497d; border-bottom: 1px solid #1f497d; color: #1f497d; font-weight: bold;">
+                            COTIZACION N° <t t-out="doc.name"/>
                         </div>
-                        <div class="col-3 text-end" style="border: 1px solid #ccc;">
-                            <t t-out="doc.date_order" t-options='{"widget": "date"}'/>
+                        
+                        <!-- Encabezado de Cliente y Fecha -->
+                        <div class="row mb-2 align-items-center">
+                            <div class="col-9 font-weight-bold" style="color: #1f497d;">
+                                ATTE: <t t-out="doc.partner_id.name"/>
+                            </div>
+                            <div class="col-3 text-end" style="border: 1px solid #ccc; padding: 2px 5px;">
+                                <t t-out="doc.date_order" t-options='{"widget": "date"}'/>
+                            </div>
                         </div>
-                    </div>
-                    <div class="mb-3" style="font-style: italic;">
-                        ATENCION: <t t-out="doc.partner_id.parent_id.name or doc.partner_id.name"/>
-                    </div>
-                    <div class="mb-3 text-muted">
-                        De acuerdo a su solicitud nos permitimos alcanzar a Ud. Nuestra cotizacion por lo siguiente:
-                    </div>
+                        <div class="mb-2" style="font-style: italic;">
+                            ATENCION: <t t-out="doc.partner_id.parent_id.name or doc.partner_id.name"/>
+                        </div>
+                        <div class="mb-3 text-muted">
+                            De acuerdo a su solicitud nos permitimos alcanzar a Ud. Nuestra cotizacion por lo siguiente:
+                        </div>
 
-                    <!-- NUEVO BLOQUE: Logos de las marcas individuales -->
-                    <div class="row mb-3 mt-3 justify-content-center align-items-center">
-                        <div class="col-2 text-center">
-                            <img src="/jilanquiri_custom/static/src/img/samoa_logo.png" style="max-height: 40px; max-width: 100%;" alt="Samoa"/>
+                        <!-- Grilla de Logos de Marcas -->
+                        <div class="row mb-3 mt-3 justify-content-center align-items-center">
+                            <div class="col-2 text-center">
+                                <img src="/jilanquiri_custom/static/src/img/samoa_logo.png" style="max-height: 38px; max-width: 100%;" alt="Samoa"/>
+                            </div>
+                            <div class="col-2 text-center">
+                                <img src="/jilanquiri_custom/static/src/img/tramontina_logo.png" style="max-height: 38px; max-width: 100%;" alt="Tramontina Pro"/>
+                            </div>
+                            <div class="col-2 text-center">
+                                <img src="/jilanquiri_custom/static/src/img/action_logo.png" style="max-height: 38px; max-width: 100%;" alt="Action"/>
+                            </div>
+                            <div class="col-2 text-center">
+                                <img src="/jilanquiri_custom/static/src/img/toptul_logo.png" style="max-height: 38px; max-width: 100%;" alt="Toptul"/>
+                            </div>
+                            <div class="col-2 text-center">
+                                <img src="/jilanquiri_custom/static/src/img/Stanley-Logo.png" style="max-height: 38px; max-width: 100%;" alt="Stanley"/>
+                            </div>
+                            <div class="col-2 text-center">
+                                <img src="/jilanquiri_custom/static/src/img/schulz_logo.png" style="max-height: 38px; max-width: 100%;" alt="Schulz"/>
+                            </div>
                         </div>
-                        <div class="col-2 text-center">
-                            <img src="/jilanquiri_custom/static/src/img/tramontina_logo.png" style="max-height: 40px; max-width: 100%;" alt="Tramontina Pro"/>
-                        </div>
-                        <div class="col-2 text-center">
-                            <img src="/jilanquiri_custom/static/src/img/action_logo.png" style="max-height: 40px; max-width: 100%;" alt="Action"/>
-                        </div>
-                        <div class="col-2 text-center">
-                            <img src="/jilanquiri_custom/static/src/img/toptul_logo.png" style="max-height: 40px; max-width: 100%;" alt="Toptul"/>
-                        </div>
-                        <div class="col-2 text-center">
-                            <img src="/jilanquiri_custom/static/src/img/Stanley-Logo.png" style="max-height: 40px; max-width: 100%;" alt="Stanley"/>
-                        </div>
-                        <div class="col-2 text-center">
-                            <img src="/jilanquiri_custom/static/src/img/schulz_logo.png" style="max-height: 40px; max-width: 100%;" alt="Schulz"/>
-                        </div>
-                    </div>
 
-
-                    <table class="table table-sm table-bordered" style="border-color: #000;">
-                        <thead style="background-color: #d9e1f2; color: #1f497d; text-align: center; font-weight: bold; font-size: 11px;">
-                            <tr>
-                                <th>CANT.</th>
-                                <th>DESCRIPCION</th>
-                                <th>MARCA</th>
-                                <th>UNIT</th>
-                                <th>PRECIO inc igv</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-center">
-                            <t t-foreach="doc.order_line" t-as="line">
-                                <tr t-if="not line.display_type">
-                                    <td><t t-out="line.product_uom_qty"/></td>
-                                    <td class="text-start font-weight-bold"><t t-out="line.name"/></td>
-                                    <td>NACIONAL</td>
-                                    <td><t t-out="line.price_unit" t-options='{"widget": "float", "precision": 2}'/></td>
-                                    <td><t t-out="line.price_total" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
-                                </tr>
-                            </t>
-                        </tbody>
-                    </table>
-
-                    <div class="row justify-content-end mt-2">
-                        <div class="col-5">
-                            <table class="table table-sm table-bordered text-center" style="border-color: #000; font-weight: bold;">
+                        <!-- Tabla de Productos -->
+                        <table class="table table-sm table-bordered" style="border-color: #000; width: 100%;">
+                            <thead style="background-color: #d9e1f2; color: #1f497d; text-align: center; font-weight: bold; font-size: 11px;">
                                 <tr>
-                                    <td>SUB TOTAL S/</td>
-                                    <td><t t-out="doc.amount_untaxed" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
+                                    <th style="border: 1px solid #000;">CANT.</th>
+                                    <th style="border: 1px solid #000;">DESCRIPCION</th>
+                                    <th style="border: 1px solid #000;">MARCA</th>
+                                    <th style="border: 1px solid #000;">UNIT</th>
+                                    <th style="border: 1px solid #000;">PRECIO inc igv</th>
                                 </tr>
-                                <tr>
-                                    <td>IGV.</td>
-                                    <td><t t-out="doc.amount_tax" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
-                                </tr>
-                                <tr>
-                                    <td>TOTAL S/</td>
-                                    <td style="background-color: #ffff00;"><t t-out="doc.amount_total" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
-                                </tr>
+                            </thead>
+                            <tbody class="text-center">
+                                <t t-foreach="doc.order_line" t-as="line">
+                                    <tr t-if="not line.display_type">
+                                        <td style="border: 1px solid #000;"><t t-out="line.product_uom_qty"/></td>
+                                        <td style="border: 1px solid #000;" class="text-start font-weight-bold"><t t-out="line.name"/></td>
+                                        <!-- Inyección dinámica de la marca -->
+                                        <td style="border: 1px solid #000;"><t t-out="line.x_marca or 'NACIONAL'"/></td>
+                                        <td style="border: 1px solid #000;"><t t-out="line.price_unit" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 1px solid #000;"><t t-out="line.price_total" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <!-- Totales -->
+                        <div class="row justify-content-end mt-2">
+                            <div class="col-5">
+                                <table class="table table-sm table-bordered text-center mb-3" style="border-color: #000; font-weight: bold;">
+                                    <tr>
+                                        <td style="border: 1px solid #000;">SUB TOTAL S/</td>
+                                        <td style="border: 1px solid #000;"><t t-out="doc.amount_untaxed" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="border: 1px solid #000;">IGV.</td>
+                                        <td style="border: 1px solid #000;"><t t-out="doc.amount_tax" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="border: 1px solid #000;">TOTAL S/</td>
+                                        <td style="border: 1px solid #000; background-color: #ffff00;"><t t-out="doc.amount_total" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Tabla Unificada de Condiciones Dinámicas, Contacto y Cuentas -->
+                        <div class="mt-3">
+                            <table class="table table-bordered text-start mb-0" style="width: 100%; border-collapse: collapse; border: 2px solid #000; font-size: 11px; font-family: Arial, sans-serif;">
+                                <tbody>
+                                    
+                                    <!-- Iterador dinámico usando el campo nativo (note) de Odoo -->
+                                    <!-- Iterador dinámico o Valores por Defecto -->
+                                    <t t-if="doc.note and doc.note.striptags().strip()">
+                                    <!-- Reemplazamos TODAS las variantes posibles por el separador fuerte ||| -->
+                                        <t t-set="nota_preparada" t-value="doc.note.replace('\n', '|||').replace('&lt;p&gt;', '|||').replace('&lt;/p&gt;', '|||').replace('&lt;br&gt;', '|||').replace('&lt;br/&gt;', '|||').replace('&lt;br /&gt;', '|||').replace('&lt;div&gt;', '|||').replace('&lt;/div&gt;', '|||')"/>
+                                    
+                                        <t t-foreach="nota_preparada.striptags().split('|||')" t-as="linea">
+                                            <tr t-if="linea.strip()" style="background-color: #ececec; color: #1f497d; font-weight: bold; text-align: center;">
+                                                <td colspan="3" style="border: 1px solid #000; padding: 3px;">
+                                                    <t t-out="linea.strip().upper()"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                    <t t-else="">
+                                    <!-- Términos predeterminados si la caja está vacía -->
+                                        <tr style="background-color: #ececec; color: #1f497d; font-weight: bold; text-align: center;">
+                                            <td colspan="3" style="border: 1px solid #000; padding: 3px;">
+                                                ENTREGA INMEDIATA PREVIO DEPOSITO
+                                            </td>
+                                        </tr>
+                                        <tr style="background-color: #ececec; color: #1f497d; font-weight: bold; text-align: center;">
+                                            <td colspan="3" style="border: 1px solid #000; padding: 3px;">
+                                                INCLUYE FLETE EN LIMA/PROVINCIAS ASUME CLIENTE
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <!-- Fila 1: Contacto y Nro Cuenta -->
+                                    <tr>
+                                        <td style="width: 50%; border: 1px solid #000; padding: 3px; font-style: italic; font-weight: bold;">
+                                            ATTE: HECTOR HERRERA BENAVENTE
+                                        </td>
+                                        <td style="width: 18%; border: 1px solid #000; padding: 3px; font-weight: bold;">
+                                            NRO CTA
+                                        </td>
+                                        <td style="width: 32%; border: 1px solid #000; padding: 3px; font-weight: bold; text-align: center;">
+                                            <t t-out="doc.x_nro_cuenta_cte or '.001108490100005995-'"/>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Fila 2: Teléfono y CCI -->
+                                    <tr>
+                                        <td style="border: 1px solid #000; padding: 3px; font-style: italic; font-weight: bold; text-align: center;">
+                                            TELF: 961949648
+                                        </td>
+                                        <td style="border: 1px solid #000; padding: 3px; font-weight: bold;">
+                                            CCI
+                                        </td>
+                                        <td style="border: 1px solid #000; padding: 3px; font-weight: bold; text-align: center;">
+                                            <t t-out="doc.x_nro_cci or '.01184900010000599574-'"/>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Fila 3 y 4: Cargo, Email y Logo Banco -->
+                                    <tr>
+                                        <td style="border: 1px solid #000; padding: 3px; font-style: italic; font-weight: bold;">
+                                            TECNICO EN INGENIERIA MECANICA
+                                        </td>
+                                        <td style="border: 1px solid #000; padding: 3px;"></td>
+                                        <td rowspan="2" style="border: 1px solid #000; padding: 2px; text-align: center; vertical-align: middle;">
+                                            <img src="/jilanquiri_custom/static/src/img/bbva_logo.png" style="max-height: 38px; max-width: 100%;" alt="BBVA Continental"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="border: 1px solid #000; padding: 3px; font-style: italic; text-align: center;">
+                                            <span style="color: #0000ff; text-decoration: underline;">jilanquirisac@gmail.com</span>
+                                        </td>
+                                        <td style="border: 1px solid #000; padding: 3px;"></td>
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
-                    </div>
 
-                    <div class="mt-4 text-center font-weight-bold" style="color: #1f497d; font-size: 11px;">
-                        <div style="border-top: 1px solid #000; padding: 2px 0;">DISPONIBILIDAD DE STOCK</div>
-                        <div style="border-top: 1px solid #000; padding: 2px 0;">CONTADO TRANSFERENCIA SOLES</div>
-                        <div style="border-top: 1px solid #000; padding: 2px 0;">PLAZO DE ENTREGA 3 DÍAS</div>
-                        <div style="border-top: 1px solid #000; padding: 2px 0;">ENTREGA INMEDIATA PREVIO DEPOSITO</div>
-                        <div style="border-top: 1px solid #000; border-bottom: 1px solid #000; padding: 2px 0;">INCLUYE FLETE EN LIMA/PROVINCIAS ASUME CLIENTE</div>
                     </div>
-
-                    <div class="mt-4" style="font-size: 11px; font-style: italic;">
-                        <div style="border-bottom: 1px solid #000; width: 40%;">ATTE: HECTOR HERRERA BENAVENTE</div>
-                        <div class="text-center" style="border-bottom: 1px solid #000; width: 50%; margin: 0 auto;">TELF: 961949648</div>
-                        <div style="border-bottom: 1px solid #000; width: 40%;">TECNICO EN INGENIERIA MECANICA</div>
-                        <div class="text-center text-primary" style="text-decoration: underline; width: 50%; margin: 0 auto; border-bottom: 1px solid #000;">jilanquirisac@gmail.com</div>
-                    </div>
-                    
-                </div>
+                </t>
             </xpath>
         </template>
     </data>

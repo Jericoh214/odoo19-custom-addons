@@ -1,24 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="view_order_form_inherit_jilanquiri" model="ir.ui.view">
-        <field name="name">sale.order.form.inherit.jilanquiri</field>
-        <field name="model">sale.order</field>
-        <field name="inherit_id" ref="sale.view_order_form"/>
-        <field name="arch" type="xml">
-            
-            <!-- 1. Ocultamos el campo nativo de Términos de pago para evitar redundancia -->
-            <xpath expr="//field[@name='payment_term_id']" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </xpath>
-
-            <!-- 2. Posicionamos tus campos personalizados debajo de la Lista de precios -->
-            <xpath expr="//field[@name='pricelist_id']" position="after">
-                <field name="condicion_pago_requerida"/>
-                <field name="tiempo_entrega_dias"/>
-                <field name="requiere_certificado_calidad"/>
-                <field name="contacto_tecnico"/>
-            </xpath>
-
-        </field>
-    </record>
+    <data>
+        <record id="view_sale_order_jilanquiri_form" model="ir.ui.view">
+            <field name="name">sale.order.jilanquiri.form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                
+                <!-- 1. Pestaña de Condiciones Jilanquiri -->
+                <xpath expr="//notebook" position="inside">
+                    <page name="jilanquiri_page" string="Condiciones Jilanquiri">
+                        <group name="jilanquiri_group">
+                            <group>
+                            <!--Campos qie permiten cambiar la informacion de cuenta si es necesario, de lo contrario se colocan los datos iniciales de la empresa-->
+                                <field name="x_nro_cuenta_cte"/>
+                                <field name="x_nro_cci"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+                <!-- 2. Columna Marca en la tabla de productos (Usando <list> para Odoo 19) -->
+                <xpath expr="//field[@name='order_line']/list/field[@name='name']" position="after">
+                    <field name="x_marca" string="Marca" optional="show"/>
+                </xpath>
+                <!-- 3. Cambiar el texto gris de la caja de Términos y Condiciones -->
+                <xpath expr="//field[@name='note']" position="attributes">
+                    <attribute name="placeholder">Términos y condiciones... (Separador de filas -> |||)</attribute>
+                </xpath>
+            </field>
+        </record>
+    </data>
 </odoo>
